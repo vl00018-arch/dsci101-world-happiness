@@ -1,0 +1,61 @@
+import plotly.express as px
+from plotly.subplots import make_subplots
+from data_loader import load_data
+
+years, dfs = load_data()
+
+# 1. Save individual high-resolution world map heatmaps for each year (2015–2019)
+for y in years:
+    fig = px.choropleth(
+        dfs[y],
+        locations="Country",
+        locationmode="country names",
+        color="Score",
+        range_color=[2.5, 8.0],
+        color_continuous_scale="YlGnBu",
+        title=f"Task 8 — World Happiness Score Heatmap ({y})",
+        labels={"Score": "Happiness Score"}
+    )
+    fig.update_geos(showcoastlines=True, coastlinecolor="Gray", showland=True, landcolor="LightGray")
+    fig.update_layout(margin={"r": 20, "t": 50, "l": 20, "b": 20})
+    fig.write_image(f"plots/task8_world_map_{y}.png", width=1000, height=600, scale=2)
+
+# 2. Also create a combined 2x3 grid of all 5 years in a single image
+combined_fig = make_subplots(
+    rows=2, cols=3,
+    specs=[
+        [{"type": "choropleth"}, {"type": "choropleth"}, {"type": "choropleth"}],
+        [{"type": "choropleth"}, {"type": "choropleth"}, None]
+    ],
+    subplot_titles=[str(y) for y in years]
+)
+
+positions = [(1, 1), (1, 2), (1, 3), (2, 1), (2, 2)]
+
+for (row, col), y in zip(positions, years):
+    single_map = px.choropleth(
+        dfs[y],
+        locations="Country",
+        locationmode="country names",
+        color="Score"
+    )
+    trace = single_map.data[0]
+    trace.coloraxis = "coloraxis"
+    combined_fig.add_trace(trace, row=row, col=col)
+
+combined_fig.update_layout(
+    title_text="Task 8 — World Happiness Score Heatmap by Year (2015–2019)",
+    coloraxis=dict(
+        colorscale="YlGnBu",
+        cmin=2.5,
+        cmax=8.0,
+        colorbar=dict(title="Score")
+    ),
+    height=800,
+    width=1400,
+    margin={"r": 30, "t": 70, "l": 30, "b": 30}
+)
+combined_fig.update_geos(showcoastlines=True, coastlinecolor="Gray", showland=True, landcolor="LightGray")
+combined_fig.write_image("plots/task8_world_map_combined.png", scale=2)
+
+print("Task 8 complete! Individual maps and 'task8_world_map_combined.png' saved to 'plots/' folder.")

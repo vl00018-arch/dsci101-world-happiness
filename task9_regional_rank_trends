@@ -1,0 +1,72 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from data_loader import load_data
+
+years, dfs = load_data()
+
+# Combine all 5 years into one DataFrame
+all_df = pd.concat(dfs.values(), ignore_index=True)
+
+# Exclude any unmapped countries so regional averages stay accurate
+regional_df = all_df[all_df["Region"] != "Other / Unmapped"]
+
+# Calculate average Happiness Rank by Region and Year
+rank_trends = regional_df.pivot_table(
+    index="Region",
+    columns="Year",
+    values="Rank",
+    aggfunc="mean"
+).round(2)
+
+# Sort regions from happiest (lowest average rank) to least happy
+rank_trends["Overall_Avg_Rank"] = rank_trends.mean(axis=1).round(2)
+rank_trends = rank_trends.sort_values(by="Overall_Avg_Rank")
+
+print("=" * 75)
+print("TASK 9: AVERAGE HAPPINESS RANK BY REGION AND YEAR (LOWER = HAPPIER)")
+print("=" * 75)
+print(rank_trends.to_string())
+
+# Save table to CSV for reference
+rank_trends.to_csv("plots/task9_regional_rank_trends.csv")
+
+# Create a 2-panel figure: Rank Trends (Left) + Score Trends (Right)
+fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+
+# Panel 1: Average Rank Trends by Region
+for region in rank_trends.index:
+    axes[0].plot(years, rank_trends.loc[region, years], marker="o", linewidth=2, label=region)
+
+axes[0].invert_yaxis()  # Place Rank 1 at the top
+axes[0].set_title("Average Happiness Rank by Region (2015–2019)")
+axes[0].set_xlabel("Year")
+axes[0].set_ylabel("Average Rank (Lower = Happier)")
+axes[0].set_xticks(years)
+axes[0].grid(True, linestyle="--", alpha=0.3)
+
+# Panel 2: Average Happiness Score Trends by Region
+score_trends = regional_df.pivot_table(
+    index="Region",
+    columns="Year",
+    values="Score",
+    aggfunc="mean"
+).loc[rank_trends.index]
+
+for region in score_trends.index:
+    axes[1].plot(years, score_trends.loc[region, years], marker="s", linewidth=2, label=region)
+
+axes[1].set_title("Average Happiness Score by Region (2015–2019)")
+axes[1].set_xlabel("Year")
+axes[1].set_ylabel("Average Happiness Score")
+axes[1].set_xticks(years)
+axes[1].grid(True, linestyle="--", alpha=0.3)
+
+# Place shared legend outside to the right
+axes[1].legend(bbox_to_anchor=(1.04, 1), loc="upper left", fontsize=8.5)
+
+fig.suptitle("Task 9 — Regional Happiness Rank & Score Trends (2015–2019)", fontsize=14)
+plt.tight_layout()
+plt.savefig("plots/task9_regional_trends.png", dpi=150)
+plt.close()
+
+print("\nTask 9 complete! Saved table and chart to 'plots/task9_regional_trends.png'.")
