@@ -1,0 +1,21 @@
+Year,Pair,Pearson,Spearman,Kendall
+2015,Score vs Generosity,0.1803,0.1725,0.1127
+2015,Freedom vs Generosity,0.3739,0.4185,0.2834
+2015,GDP vs Corruption,0.3079,0.2277,0.1426
+2015,GDP vs Freedom,0.3703,0.4154,0.2863
+2016,Score vs Generosity,0.1568,0.1492,0.0971
+2016,Freedom vs Generosity,0.3618,0.4006,0.2736
+2016,GDP vs Corruption,0.2942,0.2235,0.1435
+2016,GDP vs Freedom,0.3623,0.3973,0.2783
+2017,Score vs Generosity,0.1553,0.1364,0.0859
+2017,Freedom vs Generosity,0.3161,0.3496,0.2345
+2017,GDP vs Corruption,0.3509,0.2456,0.1578
+2017,GDP vs Freedom,0.3699,0.4068,0.2821
+2018,Score vs Generosity,0.1358,0.1123,0.0724
+2018,Freedom vs Generosity,0.298,0.3483,0.2393
+2018,GDP vs Corruption,0.3196,0.2433,0.1558
+2018,GDP vs Freedom,0.3323,0.3685,0.2572
+2019,Score vs Generosity,0.0758,0.0705,0.0438
+2019,Freedom vs Generosity,0.2697,0.3241,0.2262
+2019,GDP vs Corruption,0.2989,0.2232,0.1352
+2019,GDP vs Freedom,0.3791,0.3934,0.2708
